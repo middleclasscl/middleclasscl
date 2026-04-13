@@ -1,0 +1,583 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Special+Elite&family=Oswald:wght@700&family=Share+Tech+Mono&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #1a1008;
+    font-family: 'Special Elite', cursive;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .site-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 10px 0;
+  }
+
+  .building-scene {
+    position: relative;
+    width: 100%;
+    cursor: default;
+    user-select: none;
+  }
+
+  .building-scene svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .nav-hotspot {
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .nav-hotspot:hover { opacity: 0.85; }
+  .nav-hotspot:hover .hotspot-glow { opacity: 1; }
+
+  .hotspot-glow { opacity: 0; transition: opacity 0.15s; }
+
+  .content-panel {
+    display: none;
+    background: #f0e8d8;
+    border: 3px solid #7a5c2a;
+    padding: 2rem 2.5rem;
+    margin-top: 0;
+    position: relative;
+    font-family: 'Special Elite', cursive;
+    min-height: 300px;
+  }
+
+  .content-panel.active { display: block; }
+
+  .panel-title {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 36px;
+    color: #3a2008;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #7a5c2a;
+    padding-bottom: 0.75rem;
+  }
+
+  .panel-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 24px;
+    cursor: pointer;
+    color: #7a5c2a;
+    font-family: 'Permanent Marker', cursive;
+    line-height: 1;
+  }
+  .panel-close:hover { color: #c0392b; }
+
+  .show-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #b8956a;
+  }
+
+  .show-day {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 28px;
+    color: #8b3a0a;
+    line-height: 1;
+  }
+
+  .show-day small {
+    display: block;
+    font-size: 11px;
+    font-family: 'Share Tech Mono', monospace;
+    color: #9a7a50;
+  }
+
+  .show-venue { font-size: 16px; color: #2a1a08; }
+  .show-city { font-size: 12px; color: #9a7a50; margin-top: 2px; font-family: 'Share Tech Mono', monospace; }
+
+  .ticket-btn {
+    background: #8b3a0a;
+    color: #f0e8d8;
+    border: none;
+    padding: 6px 14px;
+    font-family: 'Special Elite', cursive;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .ticket-btn:hover { background: #c0392b; }
+
+  .record-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed #b8956a;
+  }
+
+  .record-thumb {
+    width: 56px;
+    height: 56px;
+    background: #3a2008;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Permanent Marker', cursive;
+    color: #7a5c2a;
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .record-title { font-size: 18px; color: #2a1a08; }
+  .record-meta { font-size: 12px; color: #9a7a50; margin-top: 2px; font-family: 'Share Tech Mono', monospace; }
+
+  .about-text { font-size: 15px; line-height: 1.9; color: #2a1a08; }
+  .about-text p { margin-bottom: 1rem; }
+
+  .member-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .member-card {
+    background: #e0d4b8;
+    border: 1px solid #b8956a;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .member-name { font-family: 'Permanent Marker', cursive; font-size: 15px; color: #3a2008; }
+  .member-role { font-size: 11px; color: #8b6a3a; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; margin-top: 2px; }
+
+  .contact-group { margin-bottom: 1.2rem; }
+  .contact-label { font-size: 11px; letter-spacing: 2px; color: #9a7a50; font-family: 'Share Tech Mono', monospace; margin-bottom: 6px; display: block; }
+  .contact-input {
+    width: 100%;
+    background: #e8dcc8;
+    border: 1px solid #b8956a;
+    color: #2a1a08;
+    padding: 10px 12px;
+    font-family: 'Special Elite', cursive;
+    font-size: 14px;
+    outline: none;
+  }
+  .contact-input:focus { border-color: #8b3a0a; }
+  textarea.contact-input { min-height: 100px; resize: vertical; }
+  .send-btn {
+    background: #3a2008;
+    color: #f0e8d8;
+    border: none;
+    padding: 12px 28px;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 16px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+  }
+  .send-btn:hover { background: #8b3a0a; }
+
+  .panel-tab-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-tab {
+    background: #e0d4b8;
+    border: 1px solid #b8956a;
+    padding: 6px 16px;
+    cursor: pointer;
+    font-family: 'Special Elite', cursive;
+    font-size: 13px;
+    color: #7a5c2a;
+  }
+  .panel-tab.on { background: #3a2008; color: #f0e8d8; border-color: #3a2008; }
+</style>
+
+<div class="site-wrapper">
+  <div class="building-scene">
+    <svg viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="aged">
+          <feTurbulence type="turbulence" baseFrequency="0.65" numOctaves="3" result="noise"/>
+          <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+          <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" result="blend"/>
+          <feComponentTransfer in="blend">
+            <feFuncA type="linear" slope="0.08"/>
+          </feComponentTransfer>
+          <feComposite in="SourceGraphic" operator="over"/>
+        </filter>
+      </defs>
+
+      <!-- Sky -->
+      <rect x="0" y="0" width="900" height="560" fill="#2a1f0e"/>
+      <rect x="0" y="0" width="900" height="200" fill="#1a1208"/>
+
+      <!-- Distant buildings BG -->
+      <rect x="0" y="80" width="120" height="300" fill="#1e1508"/>
+      <rect x="100" y="120" width="80" height="260" fill="#1a1208"/>
+      <rect x="700" y="90" width="100" height="290" fill="#1e1508"/>
+      <rect x="780" y="140" width="120" height="240" fill="#1a1208"/>
+
+      <!-- MAIN BUILDING WALL -->
+      <!-- Base wall — warm aged plaster -->
+      <rect x="40" y="60" width="820" height="450" fill="#c8a882"/>
+
+      <!-- Brick texture rows (subtle) -->
+      <rect x="40" y="60" width="820" height="450" fill="#ba9e72" opacity="0.3"/>
+
+      <!-- Brick lines horizontal -->
+      <line x1="40" y1="75" x2="860" y2="75" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="90" x2="860" y2="90" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="105" x2="860" y2="105" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="120" x2="860" y2="120" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="135" x2="860" y2="135" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="150" x2="860" y2="150" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="165" x2="860" y2="165" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="180" x2="860" y2="180" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="195" x2="860" y2="195" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="210" x2="860" y2="210" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="225" x2="860" y2="225" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="240" x2="860" y2="240" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="255" x2="860" y2="255" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="270" x2="860" y2="270" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="285" x2="860" y2="285" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="300" x2="860" y2="300" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="315" x2="860" y2="315" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="330" x2="860" y2="330" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="345" x2="860" y2="345" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="360" x2="860" y2="360" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="375" x2="860" y2="375" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="390" x2="860" y2="390" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="405" x2="860" y2="405" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="420" x2="860" y2="420" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="435" x2="860" y2="435" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="450" x2="860" y2="450" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="465" x2="860" y2="465" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="480" x2="860" y2="480" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+      <line x1="40" y1="495" x2="860" y2="495" stroke="#a88a5a" stroke-width="0.5" opacity="0.4"/>
+
+      <!-- Stain/weathering patches on wall -->
+      <ellipse cx="200" cy="200" rx="80" ry="60" fill="#a88050" opacity="0.25"/>
+      <ellipse cx="650" cy="350" rx="100" ry="50" fill="#7a5820" opacity="0.2"/>
+      <ellipse cx="400" cy="440" rx="120" ry="40" fill="#8a6830" opacity="0.15"/>
+      <rect x="60" y="300" width="80" height="150" fill="#9a7848" opacity="0.2"/>
+
+      <!-- Crumbling/exposed brick patches -->
+      <rect x="55" y="380" width="50" height="80" fill="#8a6040" opacity="0.5"/>
+      <rect x="810" y="200" width="40" height="60" fill="#8a6040" opacity="0.4"/>
+
+      <!-- WINDOWS -->
+      <!-- Center window large -->
+      <rect x="380" y="80" width="140" height="110" fill="#1a1208" stroke="#7a5c2a" stroke-width="4"/>
+      <line x1="450" y1="80" x2="450" y2="190" stroke="#7a5c2a" stroke-width="2"/>
+      <line x1="380" y1="135" x2="520" y2="135" stroke="#7a5c2a" stroke-width="2"/>
+      <!-- window reflection -->
+      <rect x="385" y="85" width="60" height="45" fill="#1e2a3a" opacity="0.6"/>
+      <rect x="455" y="85" width="60" height="45" fill="#1a2235" opacity="0.6"/>
+      <rect x="385" y="140" width="60" height="45" fill="#1a2030" opacity="0.6"/>
+      <rect x="455" y="140" width="60" height="45" fill="#1e2838" opacity="0.6"/>
+      <!-- window frame top arch -->
+      <rect x="375" y="75" width="150" height="10" fill="#8a6a3a"/>
+
+      <!-- Right window -->
+      <rect x="680" y="100" width="100" height="90" fill="#1a1208" stroke="#7a5c2a" stroke-width="3"/>
+      <line x1="730" y1="100" x2="730" y2="190" stroke="#7a5c2a" stroke-width="2"/>
+      <line x1="680" y1="145" x2="780" y2="145" stroke="#7a5c2a" stroke-width="2"/>
+      <rect x="684" y="104" width="42" height="37" fill="#1e2a3a" opacity="0.5"/>
+      <rect x="734" y="104" width="42" height="37" fill="#1a2235" opacity="0.5"/>
+
+      <!-- Small window top left -->
+      <rect x="80" y="85" width="70" height="55" fill="#0e0c08" stroke="#6a5228" stroke-width="2"/>
+      <line x1="115" y1="85" x2="115" y2="140" stroke="#6a5228" stroke-width="1.5"/>
+
+      <!-- Shutters left window -->
+      <rect x="80" y="85" width="12" height="55" fill="#5a4020" opacity="0.7"/>
+      <rect x="138" y="85" width="12" height="55" fill="#5a4020" opacity="0.7"/>
+
+      <!-- DOOR / ROLLER SHUTTER bottom -->
+      <rect x="580" y="370" width="160" height="140" fill="#3a3028" stroke="#2a2018" stroke-width="3"/>
+      <!-- roller shutter lines -->
+      <line x1="580" y1="385" x2="740" y2="385" stroke="#4a3a28" stroke-width="2"/>
+      <line x1="580" y1="400" x2="740" y2="400" stroke="#4a3a28" stroke-width="2"/>
+      <line x1="580" y1="415" x2="740" y2="415" stroke="#4a3a28" stroke-width="2"/>
+      <line x1="580" y1="430" x2="740" y2="430" stroke="#4a3a28" stroke-width="2"/>
+      <line x1="580" y1="445" x2="740" y2="445" stroke="#4a3a28" stroke-width="2"/>
+      <line x1="580" y1="460" x2="740" y2="460" stroke="#4a3a28" stroke-width="2"/>
+      <line x1="580" y1="475" x2="740" y2="475" stroke="#4a3a28" stroke-width="2"/>
+      <line x1="580" y1="490" x2="740" y2="490" stroke="#4a3a28" stroke-width="2"/>
+      <!-- shutter graffiti tag -->
+      <text x="640" y="440" font-family="'Permanent Marker',cursive" font-size="22" fill="#5a4a38" transform="rotate(-5,640,440)">MC</text>
+
+      <!-- BAND NAME GRAFFITI — big on wall, top left -->
+      <g transform="rotate(-3,160,160)">
+        <text x="60" y="170" font-family="'Permanent Marker',cursive" font-size="52" fill="#2a1a08" opacity="0.9" letter-spacing="-2">Middle</text>
+        <text x="72" y="222" font-family="'Permanent Marker',cursive" font-size="52" fill="#2a1a08" opacity="0.9" letter-spacing="-2">Class</text>
+      </g>
+      <!-- shadow/outline effect -->
+      <g transform="rotate(-3,160,160)">
+        <text x="62" y="172" font-family="'Permanent Marker',cursive" font-size="52" fill="none" stroke="#8b3a0a" stroke-width="1" opacity="0.3" letter-spacing="-2">Middle</text>
+        <text x="74" y="224" font-family="'Permanent Marker',cursive" font-size="52" fill="none" stroke="#8b3a0a" stroke-width="1" opacity="0.3" letter-spacing="-2">Class</text>
+      </g>
+
+      <!-- Drips under band name -->
+      <rect x="68" y="222" width="3" height="18" fill="#2a1a08" opacity="0.5"/>
+      <rect x="100" y="222" width="2" height="24" fill="#2a1a08" opacity="0.4"/>
+      <rect x="150" y="222" width="3" height="14" fill="#2a1a08" opacity="0.35"/>
+      <rect x="190" y="222" width="2" height="20" fill="#2a1a08" opacity="0.45"/>
+
+      <!-- Santiago, Chile tag -->
+      <text x="68" y="250" font-family="'Share Tech Mono',monospace" font-size="11" fill="#7a5c2a" opacity="0.8" letter-spacing="3">SANTIAGO, CHILE — EST. 2022</text>
+
+      <!-- ======= NAVIGATION HOTSPOTS ======= -->
+
+      <!-- 1. SHOWS — poster top center-right -->
+      <g class="nav-hotspot" onclick="openPanel('shows')">
+        <rect class="hotspot-glow" x="212" y="90" width="130" height="90" fill="#ff9900" opacity="0" rx="2"/>
+        <rect x="215" y="92" width="126" height="86" fill="#f0e8d0" stroke="#8a7040" stroke-width="2" transform="rotate(2,278,135)"/>
+        <rect x="215" y="92" width="126" height="18" fill="#c0392b" transform="rotate(2,278,101)"/>
+        <text x="278" y="105" font-family="'Permanent Marker',cursive" font-size="13" fill="#f0e8d0" text-anchor="middle" transform="rotate(2,278,105)">SHOWS</text>
+        <text x="278" y="130" font-family="'Permanent Marker',cursive" font-size="20" fill="#2a1a08" text-anchor="middle" transform="rotate(2,278,130)">SHOWS</text>
+        <text x="278" y="152" font-family="'Special Elite',cursive" font-size="11" fill="#5a4020" text-anchor="middle" transform="rotate(2,278,152)">VER FECHAS</text>
+        <text x="278" y="168" font-family="'Special Elite',cursive" font-size="10" fill="#8a6030" text-anchor="middle" transform="rotate(2,278,168)">↓ CLICK AQUÍ ↓</text>
+      </g>
+
+      <!-- 2. NEWS — metal sign center-right -->
+      <g class="nav-hotspot" onclick="openPanel('news')">
+        <rect class="hotspot-glow" x="535" y="195" width="100" height="40" fill="#ff9900" opacity="0" rx="2"/>
+        <rect x="537" y="197" width="96" height="36" fill="#2a5a2a" stroke="#1a3a1a" stroke-width="2"/>
+        <rect x="537" y="197" width="96" height="8" fill="#1a3a1a"/>
+        <!-- screws -->
+        <circle cx="543" cy="201" r="3" fill="#3a5a3a"/>
+        <circle cx="627" cy="201" r="3" fill="#3a5a3a"/>
+        <circle cx="543" cy="229" r="3" fill="#3a5a3a"/>
+        <circle cx="627" cy="229" r="3" fill="#3a5a3a"/>
+        <text x="585" y="220" font-family="'Permanent Marker',cursive" font-size="16" fill="#a8d8a8" text-anchor="middle">NOTICIAS</text>
+      </g>
+
+      <!-- 3. MUSIC — hand-painted text mid-right -->
+      <g class="nav-hotspot" onclick="openPanel('music')">
+        <rect class="hotspot-glow" x="750" y="260" width="100" height="80" fill="#ff9900" opacity="0" rx="2"/>
+        <text x="800" y="295" font-family="'Permanent Marker',cursive" font-size="26" fill="#8b3a0a" text-anchor="middle" transform="rotate(8,800,295)">Música</text>
+        <text x="800" y="318" font-family="'Share Tech Mono',monospace" font-size="9" fill="#7a5020" text-anchor="middle" transform="rotate(8,800,318)">DISCOGRAFÍA</text>
+        <!-- underline squiggle -->
+        <path d="M758,324 Q780,320 800,326 Q820,332 842,326" fill="none" stroke="#8b3a0a" stroke-width="2" opacity="0.6"/>
+      </g>
+
+      <!-- 4. PHOTOS — polaroid-style bottom left -->
+      <g class="nav-hotspot" onclick="openPanel('photos')">
+        <rect class="hotspot-glow" x="56" y="300" width="120" height="90" fill="#ff9900" opacity="0" rx="2"/>
+        <rect x="58" y="302" width="116" height="84" fill="#f5f0e0" stroke="#8a8070" stroke-width="1" transform="rotate(-4,116,344)"/>
+        <rect x="62" y="306" width="108" height="55" fill="#3a3028" transform="rotate(-4,116,333)"/>
+        <!-- photo icon -->
+        <circle cx="116" cy="326" r="12" fill="none" stroke="#6a6058" stroke-width="1.5" transform="rotate(-4,116,333)"/>
+        <circle cx="116" cy="326" r="5" fill="#6a6058" transform="rotate(-4,116,333)"/>
+        <text x="116" y="376" font-family="'Permanent Marker',cursive" font-size="16" fill="#3a3028" text-anchor="middle" transform="rotate(-4,116,376)">Fotos</text>
+      </g>
+
+      <!-- 5. VIDEO — old TV bottom far-left -->
+      <g class="nav-hotspot" onclick="openPanel('video')">
+        <rect class="hotspot-glow" x="40" y="420" width="120" height="90" fill="#ff9900" opacity="0" rx="2"/>
+        <!-- TV body -->
+        <rect x="42" y="428" width="108" height="72" fill="#4a3a28" stroke="#3a2a18" stroke-width="2" rx="4"/>
+        <!-- screen -->
+        <rect x="50" y="434" width="72" height="48" fill="#0a1a08" rx="2"/>
+        <rect x="52" y="436" width="68" height="44" fill="#0e2010" rx="1"/>
+        <!-- TV static text -->
+        <text x="86" y="463" font-family="'Share Tech Mono',monospace" font-size="9" fill="#2a5a2a" text-anchor="middle">VIDEO</text>
+        <!-- antenna -->
+        <line x1="100" y1="428" x2="90" y2="410" stroke="#3a2a18" stroke-width="2"/>
+        <line x1="112" y1="428" x2="122" y2="410" stroke="#3a2a18" stroke-width="2"/>
+        <!-- knobs -->
+        <circle cx="132" cy="445" r="5" fill="#3a2a18"/>
+        <circle cx="132" cy="460" r="5" fill="#3a2a18"/>
+        <circle cx="132" cy="475" r="5" fill="#3a2a18"/>
+        <text x="86" y="485" font-family="'Permanent Marker',cursive" font-size="13" fill="#c8a870" text-anchor="middle">VIDEO</text>
+      </g>
+
+      <!-- 6. CONTACT — painted on wall mid-right lower -->
+      <g class="nav-hotspot" onclick="openPanel('contact')">
+        <rect class="hotspot-glow" x="400" y="310" width="160" height="60" fill="#ff9900" opacity="0" rx="2"/>
+        <text x="478" y="352" font-family="'Permanent Marker',cursive" font-size="34" fill="#1a1a8a" text-anchor="middle" transform="rotate(-6,478,352)" opacity="0.85">Contacto</text>
+        <path d="M408,358 Q440,354 478,360 Q516,366 548,360" fill="none" stroke="#1a1a8a" stroke-width="2" opacity="0.4" transform="rotate(-6,478,360)"/>
+      </g>
+
+      <!-- 7. RELEASES — vertical on shutter area -->
+      <g class="nav-hotspot" onclick="openPanel('music')">
+        <rect class="hotspot-glow" x="748" y="360" width="80" height="140" fill="#ff9900" opacity="0" rx="2"/>
+        <text x="795" y="430" font-family="'Permanent Marker',cursive" font-size="22" fill="#3a2008" text-anchor="middle" transform="rotate(90,795,430)" opacity="0.7">Releases</text>
+      </g>
+
+      <!-- 8. ABOUT — brick-tag style top -->
+      <g class="nav-hotspot" onclick="openPanel('about')">
+        <rect class="hotspot-glow" x="560" y="100" width="100" height="50" fill="#ff9900" opacity="0" rx="2"/>
+        <!-- small piece of torn paper -->
+        <polygon points="562,102 655,98 660,148 558,152" fill="#f0e0c0" stroke="#9a8a60" stroke-width="1" opacity="0.9"/>
+        <text x="610" y="125" font-family="'Permanent Marker',cursive" font-size="13" fill="#3a2008" text-anchor="middle" transform="rotate(1,610,125)">La Banda</text>
+        <text x="610" y="142" font-family="'Share Tech Mono',monospace" font-size="9" fill="#7a6030" text-anchor="middle" transform="rotate(1,610,142)">QUIÉNES SOMOS</text>
+      </g>
+
+      <!-- Ground shadow -->
+      <rect x="40" y="502" width="820" height="8" fill="#0a0800" opacity="0.6"/>
+
+      <!-- Sidewalk -->
+      <rect x="0" y="508" width="900" height="52" fill="#3a3020"/>
+      <line x1="0" y1="520" x2="900" y2="520" stroke="#4a4028" stroke-width="1" opacity="0.5"/>
+
+      <!-- Vignette edges -->
+      <rect x="0" y="0" width="40" height="560" fill="#0a0800" opacity="0.7"/>
+      <rect x="860" y="0" width="40" height="560" fill="#0a0800" opacity="0.7"/>
+      <rect x="0" y="0" width="900" height="60" fill="#0a0800" opacity="0.8"/>
+
+      <!-- Top hint text -->
+      <text x="450" y="40" font-family="'Share Tech Mono',monospace" font-size="11" fill="#6a5028" text-anchor="middle" letter-spacing="3">HAGA CLICK EN LOS ELEMENTOS DEL EDIFICIO</text>
+    </svg>
+  </div>
+
+  <!-- CONTENT PANELS -->
+
+  <div id="panel-shows" class="content-panel">
+    <span class="panel-close" onclick="closePanel()">✕</span>
+    <div class="panel-title">Shows</div>
+    <div class="show-row">
+      <div class="show-day">18<small>ABR 2026</small></div>
+      <div><div class="show-venue">Matucana 100</div><div class="show-city">Santiago · Con banda invitada</div></div>
+      <button class="ticket-btn">Entradas</button>
+    </div>
+    <div class="show-row">
+      <div class="show-day">03<small>MAY 2026</small></div>
+      <div><div class="show-venue">Club Blondie</div><div class="show-city">Santiago · Noche de rock</div></div>
+      <button class="ticket-btn">Entradas</button>
+    </div>
+    <div class="show-row">
+      <div class="show-day">21<small>MAY 2026</small></div>
+      <div><div class="show-venue">El Clan</div><div class="show-city">Valparaíso</div></div>
+      <button class="ticket-btn">Entradas</button>
+    </div>
+    <div class="show-row">
+      <div class="show-day">07<small>JUN 2026</small></div>
+      <div><div class="show-venue">Teatro Oriente</div><div class="show-city">Santiago · Show especial</div></div>
+      <button class="ticket-btn" style="background:#5a5040;">Próximo</button>
+    </div>
+  </div>
+
+  <div id="panel-music" class="content-panel">
+    <span class="panel-close" onclick="closePanel()">✕</span>
+    <div class="panel-title">Música</div>
+    <div class="record-row">
+      <div class="record-thumb">EP<br>2024</div>
+      <div><div class="record-title">Clase Media</div><div class="record-meta">EP · 5 canciones · 2024</div></div>
+    </div>
+    <div class="record-row">
+      <div class="record-thumb">SGL<br>2023</div>
+      <div><div class="record-title">Sin Salida</div><div class="record-meta">Single · 2023</div></div>
+    </div>
+    <div class="record-row">
+      <div class="record-thumb">DMO<br>2022</div>
+      <div><div class="record-title">Ruido Blanco</div><div class="record-meta">Demo · 3 canciones · 2022</div></div>
+    </div>
+    <div class="record-row" style="opacity:0.5;">
+      <div class="record-thumb" style="border: 2px dashed #7a5c2a;">???</div>
+      <div><div class="record-title">Nuevo material</div><div class="record-meta">En grabación...</div></div>
+    </div>
+  </div>
+
+  <div id="panel-news" class="content-panel">
+    <span class="panel-close" onclick="closePanel()">✕</span>
+    <div class="panel-title">Noticias</div>
+    <div class="about-text">
+      <p><strong>ABR 2026</strong> — Confirmamos fecha en Matucana 100 para el 18 de abril. Entradas disponibles desde este viernes.</p>
+      <p><strong>MAR 2026</strong> — Terminamos de grabar la primera maqueta del nuevo disco. Más noticias pronto.</p>
+      <p><strong>ENE 2026</strong> — Nuestro EP "Clase Media" supera las 10.000 escuchas en Spotify. Gracias a todos.</p>
+      <p><strong>NOV 2025</strong> — Tocamos en el Festival de Música Independiente de Santiago. Una noche increíble.</p>
+    </div>
+  </div>
+
+  <div id="panel-photos" class="content-panel">
+    <span class="panel-close" onclick="closePanel()">✕</span>
+    <div class="panel-title">Fotos</div>
+    <div class="about-text" style="text-align:center; padding: 3rem 0; color: #7a5c2a; font-size: 18px;">
+      <p>[ Galería de fotos ]</p>
+      <p style="font-size: 13px; margin-top: 1rem;">Sube tus fotos de la banda aquí.</p>
+    </div>
+  </div>
+
+  <div id="panel-video" class="content-panel">
+    <span class="panel-close" onclick="closePanel()">✕</span>
+    <div class="panel-title">Video</div>
+    <div class="about-text" style="text-align:center; padding: 3rem 0; color: #7a5c2a; font-size: 18px;">
+      <p>[ Videos de la banda ]</p>
+      <p style="font-size: 13px; margin-top: 1rem;">Agrega tus links de YouTube aquí.</p>
+    </div>
+  </div>
+
+  <div id="panel-about" class="content-panel">
+    <span class="panel-close" onclick="closePanel()">✕</span>
+    <div class="panel-title">La Banda</div>
+    <div class="about-text">
+      <p>Middle Class nació en Santiago en 2022, entre departamentos pequeños, ensayos sin permiso y las ganas de hacer ruido en serio.</p>
+      <p>Nuestra música parte del rock clásico y lo arrastra por las calles de la ciudad — cruda, directa, sin adornos innecesarios. Influenciados por los primeros Arctic Monkeys, The Strokes, y lo mejor del post-punk inglés.</p>
+    </div>
+    <div class="member-grid">
+      <div class="member-card"><div class="member-name">Rodrigo V.</div><div class="member-role">Voz / Guitarra</div></div>
+      <div class="member-card"><div class="member-name">Camila S.</div><div class="member-role">Guitarra</div></div>
+      <div class="member-card"><div class="member-name">Matías O.</div><div class="member-role">Bajo</div></div>
+      <div class="member-card"><div class="member-name">Diego R.</div><div class="member-role">Batería</div></div>
+    </div>
+  </div>
+
+  <div id="panel-contact" class="content-panel">
+    <span class="panel-close" onclick="closePanel()">✕</span>
+    <div class="panel-title">Contacto</div>
+    <div style="max-width: 480px;">
+      <div class="contact-group">
+        <label class="contact-label">Nombre</label>
+        <input type="text" class="contact-input" placeholder="Tu nombre">
+      </div>
+      <div class="contact-group">
+        <label class="contact-label">Email</label>
+        <input type="email" class="contact-input" placeholder="tu@email.com">
+      </div>
+      <div class="contact-group">
+        <label class="contact-label">Asunto</label>
+        <select class="contact-input">
+          <option>Booking / Show</option>
+          <option>Prensa / Entrevista</option>
+          <option>Colaboración</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="contact-group">
+        <label class="contact-label">Mensaje</label>
+        <textarea class="contact-input" placeholder="Cuéntanos..."></textarea>
+      </div>
+      <button class="send-btn">Enviar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function openPanel(id) {
+    document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + id);
+    if (panel) {
+      panel.classList.add('active');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+  function closePanel() {
+    document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+  }
+</script>
